@@ -1,0 +1,137 @@
+﻿@page "/account/signin"
+
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Identity
+@using System.Text.Json
+@using System.Text
+@using Tippser.Presentation.Client.Models
+@using Tippser.Presentation.Client.Resources
+@using Tippser.Core.Entities
+@using Tippser.Infrastructure.Data;
+@using Tippser.Presentation.Client.Services
+@using Tippser.Presentation.Components.Layout
+@using Tippser.Presentation.Client.Components.Shared
+@using static Tippser.Core.Enums.Endpoint
+
+@rendermode InteractiveServer
+
+@inject HttpClient api
+@inject NavigationManager nav
+@inject IdentityRedirectManager redirectManager
+@inject SharedStateService state
+@inject IJSRuntime js
+
+
+<PageTitle>@PresentationResources.SIGNIN</PageTitle>
+
+<div id="tabId" style="display:none;" class="@VisibilityClass tab row mt-5 justify-content-center">
+    <div class="col-md-4 text-center">
+        <StatusAlert @bind-Message="@ErrorMessage" />
+        <EditForm Model="Input" method="post" OnValidSubmit="LoginUser" FormName="login">
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert" />
+            <div class="w-100 mb-3">
+                <InputText @bind-Value="Input.Email" class="text-input" autocomplete="username" aria-required="true" placeholder="@(PresentationResources.EmailPlaceholder)" />
+            </div>
+            <div class="w-100 mb-3">
+                <InputText type="password" @bind-Value="Input.Password" class="text-input" autocomplete="current-password" aria-required="true" placeholder="@(PresentationResources.PasswordPlaceholder)" />
+            </div>
+            <div class="checkbox mb-3">
+                <label class="form-label">
+                    <InputCheckbox @bind-Value="Input.RememberMe" class="darker-border-checkbox form-check-input" />
+                    @PresentationResources.RememberMe
+                </label>
+            </div>
+            <div class="w-100 d-flex align-items-center justify-content-center">
+                <button type="submit" class="btn btn-action">@PresentationResources.SIGNIN</button>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    private string? ErrorMessage;
+
+    private string VisibilityClass = "tab-hidden-l";
+
+    [SupplyParameterFromForm]
+    private InputModel Input { get; set; } = new();
+
+    [SupplyParameterFromQuery]
+    private string? ReturnUrl { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        state.OnChange += StateChanged;
+        await Task.Delay(100);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await js.InvokeVoidAsync("showComponent", "tabId");
+            VisibilityClass = "tab-active";
+        }
+    }
+
+    public void Dispose()
+    {
+        
+    }
+
+    public void StateChanged()
+    {
+        VisibilityClass = "tab-hidden-l";
+        Task.Delay(100).ContinueWith(_ => { });
+        state.OnChange -= StateChanged;
+    }
+
+    public async Task LoginUser()
+    {
+        var signInRequest = new SignInModel(Input.Email, Input.Password, Input.RememberMe);
+        var json = JsonSerializer.Serialize(signInRequest);
+        var data = new StringContent(json, Encoding.UTF8, "application/json");
+
+        using var client = new HttpClient();
+
+        var endpoint = Core.Enums.Endpoint.Convert(ApiEndpoint.Account_SignIn);
+        var response = await api.PostAsJsonAsync(endpoint, signInRequest);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var result = await response.Content.ReadFromJsonAsync<Client.Models.SignInResult>();
+            if (result!.Success)
+            {
+                nav.NavigateTo("/standings", true);
+            }
+            else if (result.Locked == true)
+            {
+                ErrorMessage = PresentationResources.Error_AccountLockedOut;
+            }
+            else
+            {
+                ErrorMessage = PresentationResources.Error_InvalidLoginAttempt;
+            }
+        }
+        else
+        {
+            ErrorMessage = PresentationResources.Error_LoginAttemptFailed;
+        }
+    }
+
+    private sealed class InputModel
+    {
+        [Required(ErrorMessageResourceType = typeof(PresentationResources), ErrorMessageResourceName = nameof(PresentationResources.Error_EmailRequired))]
+        [EmailAddress(ErrorMessageResourceType = typeof(PresentationResources), ErrorMessageResourceName = nameof(PresentationResources.Error_EmailInvalid))]
+        public string Email { get; set; } = "";
+
+        [Required(ErrorMessageResourceType = typeof(PresentationResources), ErrorMessageResourceName = nameof(PresentationResources.Error_PasswordRequired))]
+        [DataType(DataType.Password)]
+        public string Password { get; set; } = "";
+
+        [Display(ResourceType = typeof(PresentationResources), Name = nameof(PresentationResources.RememberMe))]
+        public bool RememberMe { get; set; }
+    }
+}

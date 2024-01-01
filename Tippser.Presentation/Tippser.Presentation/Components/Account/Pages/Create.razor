@@ -1,0 +1,147 @@
+﻿@page "/account/create"
+
+@using System.ComponentModel.DataAnnotations
+@using System.Text
+@using System.Text.Encodings.Web
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.WebUtilities
+@using System.Text.Json
+@using Tippser.Presentation.Client.Models
+@using Tippser.Presentation.Client.Resources
+@using Tippser.Core.Entities
+@using Tippser.Infrastructure.Data;
+@using Tippser.Presentation.Client.Services
+@using Tippser.Presentation.Components.Layout
+@using static Tippser.Core.Enums.Endpoint
+
+@rendermode InteractiveServer
+
+@inject HttpClient api
+@inject NavigationManager nav
+@inject IdentityRedirectManager redirectManager
+@inject SharedStateService state;
+@inject IJSRuntime js
+
+<PageTitle>@PresentationResources.CREATEACCOUNT</PageTitle>
+
+<div id="tabId" style="display:none;" class="@VisibilityClass tab row mt-5 justify-content-center">
+    <div class="col-md-4 text-center">
+            <StatusAlert @bind-Message="@ErrorMessage" />
+            <EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="CreateUser" FormName="register">
+                <DataAnnotationsValidator />
+                <ValidationSummary class="text-danger" role="alert" />
+                <div class="w-100 mb-3">
+                    <InputText @bind-Value="Input.Name" class="text-input" autocomplete="name" aria-required="true" placeholder="@(PresentationResources.EmailPlaceholder)" />
+                </div>
+                <div class="w-100 mb-3">
+                    <InputText @bind-Value="Input.Email" class="text-input" autocomplete="username" aria-required="true" placeholder="@(PresentationResources.EmailPlaceholder)" />
+                </div>
+                <div class="w-100 mb-3">
+                    <InputText type="password" @bind-Value="Input.Password" class="text-input" autocomplete="new-password" aria-required="true" placeholder="@(PresentationResources.PasswordPlaceholder)" />
+                </div>
+                <div class="w-100 mb-3">
+                    <InputText type="password" @bind-Value="Input.ConfirmPassword" class="text-input" autocomplete="new-password" aria-required="true" placeholder="@(PresentationResources.ConfirmPasswordPlaceholder)" />
+                </div>
+                <div class="w-100 d-flex align-items-center justify-content-center">
+                    <button type="submit" class="btn btn-action">@PresentationResources.CREATEACCOUNT</button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+
+@code {
+    private IEnumerable<IdentityError>? identityErrors;
+
+    [SupplyParameterFromForm]
+    private InputModel Input { get; set; } = new();
+
+    [SupplyParameterFromQuery]
+    private string? ReturnUrl { get; set; }
+
+    private string? ErrorMessage { get; set; }
+
+    private string VisibilityClass = "tab-hidden-l";
+
+    protected override async Task OnInitializedAsync()
+    {
+        state.OnChange += StateChanged;
+        await Task.Delay(100);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await js.InvokeVoidAsync("showComponent", "tabId");
+            VisibilityClass = "tab-active";
+        }
+    }
+
+    public void Dispose()
+    {
+        state.OnChange -= StateChanged;
+    }
+
+    public void StateChanged()
+    {
+        VisibilityClass = "tab-hidden-l";
+        Task.Delay(100).ContinueWith(_ => { });
+    }
+
+    public async Task CreateUser()
+    {
+        var createUserRequest = new CreateUserModel(Input.Name, Input.Email, Input.Password, Input.ConfirmPassword);
+        var json = JsonSerializer.Serialize(createUserRequest);
+        var data = new StringContent(json, Encoding.UTF8, "application/json");
+
+        using var client = new HttpClient();
+
+        var endpoint = Core.Enums.Endpoint.Convert(ApiEndpoint.Account_Create);
+        var response = await api.PostAsJsonAsync(endpoint, createUserRequest);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var result = await response.Content.ReadFromJsonAsync<IdentityResult>();
+            if (result?.Succeeded == true)
+            {
+                redirectManager.RedirectTo(ReturnUrl);
+            }
+            else if (result?.Errors.Count()>0)
+            {
+                ErrorMessage = $"{PresentationResources.Error}: {string.Join(", ", identityErrors!.Select(error => error.Description))}";
+            }
+            else
+            {
+                ErrorMessage = PresentationResources.Error_CreatingUser;
+            }
+        }
+        else
+        {
+            ErrorMessage = PresentationResources.Error_CreatingUser;
+        }
+    }
+
+    private sealed class InputModel
+    {
+        [Required(ErrorMessageResourceType = typeof(PresentationResources), ErrorMessageResourceName = nameof(PresentationResources.Error_NameRequired))]
+        [Display(ResourceType = typeof(PresentationResources), Name = nameof(PresentationResources.Name))]
+        public string Name { get; set; } = ""; 
+        
+        [Required(ErrorMessageResourceType = typeof(PresentationResources), ErrorMessageResourceName = nameof(PresentationResources.Error_EmailRequired))]
+        [EmailAddress(ErrorMessageResourceType = typeof(PresentationResources), ErrorMessageResourceName = nameof(PresentationResources.Error_EmailInvalid))]
+        [Display(ResourceType = typeof(PresentationResources), Name = nameof(PresentationResources.EmailAddress))]
+        public string Email { get; set; } = "";
+
+        [Required(ErrorMessageResourceType = typeof(PresentationResources), ErrorMessageResourceName = nameof(PresentationResources.Error_PasswordRequired))]
+        [StringLength(20, MinimumLength = 8,ErrorMessageResourceType =typeof(PresentationResources),ErrorMessageResourceName =nameof(PresentationResources.Error_PasswordLength))]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).+$", ErrorMessageResourceType = typeof(PresentationResources), ErrorMessageResourceName = nameof(PresentationResources.Error_PasswordInvalid))]
+        [DataType(DataType.Password)]
+        [Display(ResourceType = typeof(PresentationResources), Name = nameof(PresentationResources.PasswordField))]
+        public string Password { get; set; } = "";
+
+        [DataType(DataType.Password)]
+        [Display(ResourceType = typeof(PresentationResources), Name = nameof(PresentationResources.ConfirmPassword))]
+        [Compare(nameof(Password), ErrorMessageResourceType = typeof(PresentationResources),ErrorMessageResourceName =nameof(PresentationResources.Error_PasswordDoesntMatch))]
+        public string ConfirmPassword { get; set; } = "";
+    }
+}

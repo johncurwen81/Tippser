@@ -1,0 +1,9 @@
+﻿@inject NavigationManager NavigationManager
+
+@code {
+    protected override void OnInitialized()
+    {
+        var signinEndpoint = Core.Enums.Endpoint.Convert(Core.Enums.Endpoint.ApiEndpoint.Account_SignIn);
+        NavigationManager.NavigateTo($"{signinEndpoint}?returnUrl={Uri.EscapeDataString(NavigationManager.Uri)}", forceLoad: true);
+    }
+}

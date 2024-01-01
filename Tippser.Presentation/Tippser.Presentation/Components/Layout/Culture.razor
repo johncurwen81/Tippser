@@ -1,0 +1,22 @@
+﻿@using System.Globalization
+@using Microsoft.AspNetCore.Localization
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Components
+@using static Tippser.Core.Enums.Endpoint
+
+
+@rendermode InteractiveServer
+
+@inject NavigationManager nav
+
+<button class="btn-culture @currentCulture" @onclick="SetCulture"></button>
+
+@code {
+    private string? currentCulture = CultureInfo.CurrentCulture.Name;
+
+    private void SetCulture()
+    {
+        var returnUrl = $"/{nav.Uri.Replace(nav.BaseUri, "")}";
+        nav.NavigateTo($"/api/common/setculture?returnUrl={returnUrl}", forceLoad: true);
+    }
+}

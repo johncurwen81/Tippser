@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34221.43
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tippser.Core", "Tippser.Core\Tippser.Core.csproj", "{229D9D31-46B1-45AE-8960-65DD2A6933E8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tippser.Infrastructure", "Tippser.Infrastructure\Tippser.Infrastructure.csproj", "{66930CB2-192B-4872-81E0-85A99D2AE9BF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tipser.Tests", "Tipser.Tests\Tipser.Tests.csproj", "{084F4FAF-3CC8-4606-BD10-A8BC0783B485}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tippser.Application", "Tippser.Application\Tippser.Application.csproj", "{E16F9C01-3D84-4583-9D4E-B625F6F35F1C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tippser.Presentation", "Tippser.Presentation\Tippser.Presentation\Tippser.Presentation.csproj", "{4D995A85-6639-4DF3-86F4-3E433A1D0DED}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tippser.Presentation.Client", "Tippser.Presentation\Tippser.Presentation.Client\Tippser.Presentation.Client.csproj", "{BE811410-0DEE-4933-944C-66F6B096C55F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{229D9D31-46B1-45AE-8960-65DD2A6933E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{229D9D31-46B1-45AE-8960-65DD2A6933E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{229D9D31-46B1-45AE-8960-65DD2A6933E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{229D9D31-46B1-45AE-8960-65DD2A6933E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66930CB2-192B-4872-81E0-85A99D2AE9BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66930CB2-192B-4872-81E0-85A99D2AE9BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66930CB2-192B-4872-81E0-85A99D2AE9BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66930CB2-192B-4872-81E0-85A99D2AE9BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{084F4FAF-3CC8-4606-BD10-A8BC0783B485}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{084F4FAF-3CC8-4606-BD10-A8BC0783B485}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{084F4FAF-3CC8-4606-BD10-A8BC0783B485}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{084F4FAF-3CC8-4606-BD10-A8BC0783B485}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E16F9C01-3D84-4583-9D4E-B625F6F35F1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E16F9C01-3D84-4583-9D4E-B625F6F35F1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E16F9C01-3D84-4583-9D4E-B625F6F35F1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E16F9C01-3D84-4583-9D4E-B625F6F35F1C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D995A85-6639-4DF3-86F4-3E433A1D0DED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D995A85-6639-4DF3-86F4-3E433A1D0DED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D995A85-6639-4DF3-86F4-3E433A1D0DED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D995A85-6639-4DF3-86F4-3E433A1D0DED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE811410-0DEE-4933-944C-66F6B096C55F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE811410-0DEE-4933-944C-66F6B096C55F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE811410-0DEE-4933-944C-66F6B096C55F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE811410-0DEE-4933-944C-66F6B096C55F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F5FA3772-4FE3-4927-82C0-85FD9BC20A98}
+	EndGlobalSection
+EndGlobal

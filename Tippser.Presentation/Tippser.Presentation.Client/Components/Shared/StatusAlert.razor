@@ -1,0 +1,49 @@
+﻿@using System.Threading
+@using Tippser.Presentation.Client.Services
+@using Tippser.Presentation.Client.Resources
+
+@if (!string.IsNullOrEmpty(Message))
+{
+    var statusMessageClass = Message.StartsWith(PresentationResources.Error) ? "danger" : "success";
+
+    <div class="alert alert-@statusMessageClass alert-dismissible fade show" role="alert" @onclick="CloseAlert">
+        @Message
+    </div>
+}
+
+@code {
+    [Parameter]
+    public string? Message { get; set; }
+
+    [Parameter]
+    public EventCallback<string> MessageChanged { get; set; }
+
+    private Timer? _closeTimer;
+
+    [Parameter]
+    public int Timeout { get; set; } = 3000;
+
+    protected override void OnParametersSet()
+    {
+        if (!string.IsNullOrEmpty(Message))
+        {
+            _closeTimer?.Dispose();
+            _closeTimer = new Timer(CloseAlert, null, Timeout, Timeout);
+        }
+    }
+
+    private void CloseAlert(object? state)
+    {
+        InvokeAsync(() =>
+        {
+            Message = null; 
+            MessageChanged.InvokeAsync(Message); 
+            StateHasChanged(); 
+        });
+    }
+
+    public void Dispose()
+    {
+        _closeTimer?.Dispose();
+    }
+}

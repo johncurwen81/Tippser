@@ -1,0 +1,246 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ACCOUNT" xml:space="preserve">
+    <value>MINA SIDOR</value>
+  </data>
+  <data name="asdasda" xml:space="preserve">
+    <value>asdasd</value>
+  </data>
+  <data name="BETS" xml:space="preserve">
+    <value>TIPS</value>
+  </data>
+  <data name="ConfirmEmail_Error" xml:space="preserve">
+    <value>Fel vid inläsning av användare med ID</value>
+  </data>
+  <data name="ConfirmEmail_Error2" xml:space="preserve">
+    <value>Fel vid bekräftelse av din e-post.</value>
+  </data>
+  <data name="ConfirmEmail_Success" xml:space="preserve">
+    <value>Tack för att du bekräftade din e-post.</value>
+  </data>
+  <data name="ConfirmPassword" xml:space="preserve">
+    <value>Bekräfta lösenord</value>
+  </data>
+  <data name="ConfirmPasswordPlaceholder" xml:space="preserve">
+    <value>bekräfta lösenord</value>
+  </data>
+  <data name="CREATEACCOUNT" xml:space="preserve">
+    <value>SKAPA KONTO</value>
+  </data>
+  <data name="Created" xml:space="preserve">
+    <value>Skapad</value>
+  </data>
+  <data name="CreateNewUser" xml:space="preserve">
+    <value>Skapa nytt användarkonto</value>
+  </data>
+  <data name="EMAIL" xml:space="preserve">
+    <value>EPOST</value>
+  </data>
+  <data name="EmailAddress" xml:space="preserve">
+    <value>Epostadress</value>
+  </data>
+  <data name="EmailPlaceholder" xml:space="preserve">
+    <value>namn@doman.se</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Fel</value>
+  </data>
+  <data name="Error_AccountLockedOut" xml:space="preserve">
+    <value>Fel: Kontot är låst.</value>
+  </data>
+  <data name="Error_CreatingUser" xml:space="preserve">
+    <value>Fel: Ett fel inträffade vid skapandet av användarkontot.</value>
+  </data>
+  <data name="Error_EmailRequired" xml:space="preserve">
+    <value>Fel: Epostadress krävs.</value>
+  </data>
+  <data name="Error_InvalidEmail" xml:space="preserve">
+    <value>Fel: Den angivna e-postadressen är inte en giltig e-postadress.</value>
+  </data>
+  <data name="Error_InvalidLoginAttempt" xml:space="preserve">
+    <value>Fel: Ogiltigt inloggningsförsök.</value>
+  </data>
+  <data name="Error_LoginAttemptFailed" xml:space="preserve">
+    <value>Fel: Kunde inte logga in.</value>
+  </data>
+  <data name="Error_NameRequired" xml:space="preserve">
+    <value>Fel: Namn krävs.</value>
+  </data>
+  <data name="Error_Password" xml:space="preserve">
+    <value>Fel: Lösenord krävs.</value>
+  </data>
+  <data name="Error_PasswordDoesntMatch" xml:space="preserve">
+    <value>Fel: Lösenord stämmer inte med varandra.</value>
+  </data>
+  <data name="Error_PasswordInvalid" xml:space="preserve">
+    <value>Fel: Lösenordet uppfyller inte följande krav; minst en siffra, minst en stor bokstav, minst en liten bokstav, minst en symbol.</value>
+  </data>
+  <data name="Error_PasswordLength" xml:space="preserve">
+    <value>Fel: {0} måste ha minimum {2} och maximum {1} tecken.</value>
+  </data>
+  <data name="Error_UnableToLogIn" xml:space="preserve">
+    <value>Fel: Kunde inte logga in.</value>
+  </data>
+  <data name="FORGOTPASSWORD" xml:space="preserve">
+    <value>ÅTERSTÄLL LÖSENORD</value>
+  </data>
+  <data name="Group" xml:space="preserve">
+    <value>GRUPP</value>
+  </data>
+  <data name="LogInMessage" xml:space="preserve">
+    <value>Du måste logga in eller skapa ett konto!</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Namn</value>
+  </data>
+  <data name="NamePlaceholder" xml:space="preserve">
+    <value>namn</value>
+  </data>
+  <data name="NoBetsMessage" xml:space="preserve">
+    <value>Du har inte lagt några spel ännu!</value>
+  </data>
+  <data name="NoDataMessage" xml:space="preserve">
+    <value>Det finns inte tillräckligt med data för att sammanställa tabellen ännu!"</value>
+  </data>
+  <data name="PASSWORD" xml:space="preserve">
+    <value>LÖSENORD</value>
+  </data>
+  <data name="PasswordField" xml:space="preserve">
+    <value>Lösenord</value>
+  </data>
+  <data name="PasswordPlaceholder" xml:space="preserve">
+    <value>lösenord</value>
+  </data>
+  <data name="RememberMe" xml:space="preserve">
+    <value>Kom ihåg mig</value>
+  </data>
+  <data name="ResendEmailConfirmation" xml:space="preserve">
+    <value>Skicka om bekräftelsemejl</value>
+  </data>
+  <data name="ResetPassword" xml:space="preserve">
+    <value>Återställ lösenord</value>
+  </data>
+  <data name="SIGNIN" xml:space="preserve">
+    <value>LOGGA IN</value>
+  </data>
+  <data name="STANDINGS" xml:space="preserve">
+    <value>TABELL</value>
+  </data>
+</root>

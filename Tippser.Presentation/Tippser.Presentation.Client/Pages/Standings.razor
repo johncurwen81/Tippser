@@ -1,0 +1,107 @@
+﻿@page "/standings"
+
+@attribute [Authorize]
+
+@rendermode InteractiveAuto
+
+@inject ILogger<Standings> logger;
+@inject IConfiguration config;
+
+@using Microsoft.AspNetCore.Authorization
+@using Tippser.Presentation.Client.Resources
+@using Tippser.Core
+@using Tippser.Core.Enums
+@using Tippser.Core.Interfaces
+@using static Tippser.Core.Enums.Endpoint
+@using Tippser.Presentation.Client.Models
+@using Tippser.Presentation.Client.Components.Shared
+
+@inject HttpClient api
+
+<PageTitle>Standings</PageTitle>
+
+<h3>Standings</h3>
+
+<StatusAlert @bind-Message="@message" />
+
+@for (int i = 0; i < groups.Count(); i = i + 2)
+{
+    <div id="@($"hcontainer tab-part-{(i / 2) + 1}")" class="ovf-show @(i == 0 ? "tab-part tab-part-active" : "tab-part tab-part-hidden-l")">
+        @for (int j = 0; j < 2; j++)
+        {
+            var group = groups.ElementAt(i + j);
+            <div class="vcontainer w-350px ovf-show">
+                <div class="table-bd">
+                    <table class="w-350px">
+                        <thead>
+                            <tr>
+                                <th colspan="6">
+                                    <h5>@PresentationResources.Group @group.Key</h5>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th></th>
+                                <th>Pl</th>
+                                <th>G+</th>
+                                <th>G-</th>
+                                <th>GD</th>
+                                <th>Pt</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var team in group)
+                            {
+                                <tr>
+                                    <td><span>@team.Team</span></td>
+                                    <td>@team.Played</td>
+                                    <td>@team.GoalsFor</td>
+                                    <td>@team.GoalsAgainst</td>
+                                    <td>@team.GoalDifference</td>
+                                    <td>@team.Points</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+        @for (int k = 0; k < groups.Count(); k = k + 2)
+        {
+            <button class="table-nav" onclick="navigateTables('tab-part-@((k / 2) + 1)');">@($"{groups.ElementAt(k).Key} {groups.ElementAt(k + 1).Key}")</button>
+        }
+    </div>
+}
+
+@code {
+    private IEnumerable<IGrouping<string, Core.Models.TeamDto>> groups = new List<IGrouping<string, Core.Models.TeamDto>>();
+
+    private string? message;
+
+    protected async override Task OnInitializedAsync()
+    {
+        try
+        {
+            var model = await api.GetFromJsonAsync<StandingsViewModel>(Endpoint.Convert(ApiEndpoint.Competitions_GetStandings));
+
+            groups = model!.Table.GroupBy(t => t.Group);
+        }
+        catch (Exception ex)
+        {
+            message = $"An error occurred whilst compiling the competition data";
+
+            logger.LogError(ex, $"Error in {nameof(Standings)}. {ex.Message}");
+
+            var env = config[Constants.Environment];
+
+            bool IsDevelopment()
+            {
+                return env?.Equals(Constants.Development, StringComparison.OrdinalIgnoreCase) ?? false;
+            }
+
+            if (!IsDevelopment())
+            {
+                throw;
+            }
+        }
+    }
+}

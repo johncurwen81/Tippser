@@ -1,0 +1,52 @@
+﻿@page "/account/confirmemail"
+
+@using System.Text
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.WebUtilities
+@using Tippser.Presentation.Client.Resources
+@using Tippser.Core.Entities
+@using Tippser.Infrastructure.Data
+@using Tippser.Presentation.Client.Services
+@using Tippser.Presentation.Components.Layout
+
+@inject UserManager<Person> userManager
+@inject IdentityRedirectManager redirectManager
+
+<PageTitle>Confirm email</PageTitle>
+
+<h1>Confirm email</h1>
+<StatusAlert @bind-Message="@statusMessage" />
+
+@code {
+    private string? statusMessage;
+
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
+    [SupplyParameterFromQuery]
+    private string? UserId { get; set; }
+
+    [SupplyParameterFromQuery]
+    private string? Code { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (UserId is null || Code is null)
+        {
+            redirectManager.RedirectTo("");
+        }
+
+        var user = await userManager.FindByIdAsync(UserId);
+        if (user is null)
+        {
+            HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
+            statusMessage = $"{PresentationResources.ConfirmEmail_Error} {UserId}";
+        }
+        else
+        {
+            var code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(Code));
+            var result = await userManager.ConfirmEmailAsync(user, code);
+            statusMessage = result.Succeeded ? $"{PresentationResources.ConfirmEmail_Success}" : $"{PresentationResources.ConfirmEmail_Error2}";
+        }
+    }
+}

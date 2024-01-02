@@ -1,19 +1,5 @@
 ﻿@page "/account/signin"
 
-@using System.ComponentModel.DataAnnotations
-@using Microsoft.AspNetCore.Authentication
-@using Microsoft.AspNetCore.Identity
-@using System.Text.Json
-@using System.Text
-@using Tippser.Presentation.Client.Models
-@using Tippser.Presentation.Client.Resources
-@using Tippser.Core.Entities
-@using Tippser.Infrastructure.Data;
-@using Tippser.Presentation.Client.Services
-@using Tippser.Presentation.Components.Layout
-@using Tippser.Presentation.Client.Components.Shared
-@using static Tippser.Core.Enums.Endpoint
-
 @rendermode InteractiveServer
 
 @inject HttpClient api
@@ -53,7 +39,7 @@
 @code {
     private string? ErrorMessage;
 
-    private string VisibilityClass = "tab-hidden-l";
+    private string VisibilityClass = string.Empty;
 
     [SupplyParameterFromForm]
     private InputModel Input { get; set; } = new();
@@ -63,6 +49,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        VisibilityClass = state.EntryClass;
         state.OnChange += StateChanged;
         await Task.Delay(100);
     }
@@ -76,14 +63,9 @@
         }
     }
 
-    public void Dispose()
-    {
-        
-    }
-
     public void StateChanged()
     {
-        VisibilityClass = "tab-hidden-l";
+        VisibilityClass = state.ExitClass;
         Task.Delay(100).ContinueWith(_ => { });
         state.OnChange -= StateChanged;
     }

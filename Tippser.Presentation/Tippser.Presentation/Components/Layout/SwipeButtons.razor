@@ -1,14 +1,74 @@
-﻿<button type="button" class="btn-navfwd" id="nav-forward" @onclick="NavigateForward"></button>
-<button type="button" class="btn-navbck" id="nav-back" @onclick="NavigateBackward"></button>
+﻿@using Tippser.Presentation.Client.Resources
+@using Microsoft.AspNetCore.Components.Authorization
+@using Tippser.Presentation.Client.Services
+
+@inject AuthenticationStateProvider authenticationStateProvider
+@inject NavigationManager nav
+
+@inject SharedStateService state;
+
+@rendermode InteractiveServer
+
+<button type="button" class="btn-navfwd" id="nav-forward" @onclick="@((e) => SetState(1))"></button>
+<button type="button" class="btn-navbck" id="nav-back" @onclick="@((e) => SetState(-1))"></button>
 
 @code {
-    private void NavigateForward()
+    private string? CurrentUrl;
+
+    public async Task SetState(int direction)
     {
-        // Implementation for forward navigation
+        var exitClass = "tab-hidden-l";
+        var entryClass = "tab-hidden-r";
+
+        switch (direction)
+        {
+            case -1:
+                exitClass = "tab-hidden-r";
+                entryClass = "tab-hidden-l";
+                break;
+        }
+
+        var url = string.Empty;
+
+        switch (CurrentUrl)
+        {
+            case null:
+                break;
+            case var cu when cu!.ToLower().Contains("account/signin"):
+                url = direction == -1 ? "account/signin" : "account/create";
+                break;
+            case var cu when cu!.ToLower().Contains("account/create"):
+                url = direction == -1 ? "account/signin" : "account/forgotpassword";
+                break;
+            case var cu when cu!.ToLower().Contains("account/forgotpassword"):
+                url = direction == -1 ? "account/create" : "account/forgotpassword";
+                break;
+            default:
+                break;
+        }
+
+        state.Set(entryClass, exitClass);
+
+        await Task.Delay(100);
+
+        nav.NavigateTo(url);
     }
 
-    private void NavigateBackward()
+    protected override void OnInitialized()
     {
-        // Implementation for backward navigation
+        CurrentUrl = nav.ToBaseRelativePath(nav.Uri);
+        nav.LocationChanged += OnLocationChanged;
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        CurrentUrl = nav.ToBaseRelativePath(e.Location);
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        nav.LocationChanged -= OnLocationChanged;
     }
 }
+

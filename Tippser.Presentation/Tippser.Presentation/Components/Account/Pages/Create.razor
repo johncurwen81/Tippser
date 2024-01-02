@@ -1,19 +1,5 @@
 ﻿@page "/account/create"
 
-@using System.ComponentModel.DataAnnotations
-@using System.Text
-@using System.Text.Encodings.Web
-@using Microsoft.AspNetCore.Identity
-@using Microsoft.AspNetCore.WebUtilities
-@using System.Text.Json
-@using Tippser.Presentation.Client.Models
-@using Tippser.Presentation.Client.Resources
-@using Tippser.Core.Entities
-@using Tippser.Infrastructure.Data;
-@using Tippser.Presentation.Client.Services
-@using Tippser.Presentation.Components.Layout
-@using static Tippser.Core.Enums.Endpoint
-
 @rendermode InteractiveServer
 
 @inject HttpClient api
@@ -27,7 +13,7 @@
 <div id="tabId" style="display:none;" class="@VisibilityClass tab row mt-5 justify-content-center">
     <div class="col-md-4 text-center">
             <StatusAlert @bind-Message="@ErrorMessage" />
-            <EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="CreateUser" FormName="register">
+            <EditForm Model="Input" method="post" OnValidSubmit="CreateUser" FormName="register">
                 <DataAnnotationsValidator />
                 <ValidationSummary class="text-danger" role="alert" />
                 <div class="w-100 mb-3">
@@ -60,10 +46,11 @@
 
     private string? ErrorMessage { get; set; }
 
-    private string VisibilityClass = "tab-hidden-l";
+    private string VisibilityClass = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
+        VisibilityClass = state.EntryClass;
         state.OnChange += StateChanged;
         await Task.Delay(100);
     }
@@ -77,15 +64,11 @@
         }
     }
 
-    public void Dispose()
-    {
-        state.OnChange -= StateChanged;
-    }
-
     public void StateChanged()
     {
-        VisibilityClass = "tab-hidden-l";
+        VisibilityClass = state.ExitClass;
         Task.Delay(100).ContinueWith(_ => { });
+        state.OnChange -= StateChanged;
     }
 
     public async Task CreateUser()
@@ -104,7 +87,7 @@
             var result = await response.Content.ReadFromJsonAsync<IdentityResult>();
             if (result?.Succeeded == true)
             {
-                redirectManager.RedirectTo(ReturnUrl);
+                redirectManager.RedirectTo("/account/signin");
             }
             else if (result?.Errors.Count()>0)
             {

@@ -78,13 +78,16 @@ namespace Tippser.Presentation.Client.Services
 
     public class SharedStateService
     {
-        public string SharedData { get; set; } = string.Empty;
+        public string EntryClass { get; set; } = string.Empty;
+
+        public string ExitClass { get; set; } = string.Empty;
 
         public event Action? OnChange;
 
-        public void Set(string data)
+        public void Set(string entryClass, string exitClass)
         {
-            SharedData = data;
+            EntryClass = entryClass;
+            ExitClass = exitClass;
             OnChange?.Invoke();
         }
     }

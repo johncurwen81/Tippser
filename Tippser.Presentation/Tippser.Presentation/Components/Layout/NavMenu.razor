@@ -12,46 +12,86 @@
 
 <AuthorizeView>
     <Authorized>
-        <a class="@(GetClass("standings"))" @onclick="@((e) => SetState("standings"))">
+        <a class="@(GetClass("standings"))" @onclick="@((e) => SetState("standings", 1))">
             @PresentationResources.STANDINGS
         </a>
 
-        <a class="@(GetClass("bets"))" @onclick="@((e) => SetState("bets"))">
+        <a class="@(GetClass("bets"))" @onclick="@((e) => SetState("bets", 2))">
             @PresentationResources.BETS
         </a>
 
-        <a class="@(GetClass("account"))" @onclick="@((e) => SetState("account"))">
+        <a class="@(GetClass("account"))" @onclick="@((e) => SetState("account", 3))">
             @PresentationResources.ACCOUNT
         </a>
     </Authorized>
 
     <NotAuthorized>
-        <a class="@(GetClass("account/signin"))" @onclick="@((e) => SetState("account/signin"))">
+        <a class="@(GetClass("account/signin"))" @onclick="@((e) => SetState("account/signin", 1))">
             @PresentationResources.SIGNIN
         </a>
 
-        <a class="@(GetClass("account/create"))" @onclick="@((e) => SetState("account/create"))">
+        <a class="@(GetClass("account/create"))" @onclick="@((e) => SetState("account/create", 2))">
             @PresentationResources.CREATEACCOUNT
         </a>
 
-        <a class="@(GetClass("account/forgotpassword"))" @onclick="@((e) => SetState("account/forgotpassword"))">
+        <a class="@(GetClass("account/forgotpassword"))" @onclick="@((e) => SetState("account/forgotpassword", 3))">
             @PresentationResources.FORGOTPASSWORD
         </a>
     </NotAuthorized>
 </AuthorizeView>
 
 @code {
-    private string? currentUrl;
+    private string? CurrentUrl;
 
-    public void SetState(string url)
+    public async Task SetState(string url, int newOrder)
     {
-        state.Set(currentUrl!);
+        int oldOrder = 0;
+
+        switch (CurrentUrl)
+        {
+            case null:
+                break;
+            case var cu when cu!.ToLower().Contains("account/signin"):
+                oldOrder = 1;
+                break;
+            case var cu when cu!.ToLower().Contains("account/create"):
+                oldOrder = 2;
+                break;
+            case var cu when cu!.ToLower().Contains("account/forgotpassword"):
+                oldOrder = 3;
+                break;
+            default:
+                break;
+        }
+
+        var exitClass = "tab-hidden-l";
+        var entryClass = "tab-hidden-r";
+
+        if (oldOrder > newOrder)
+        {
+            exitClass = "tab-hidden-r";
+        }
+
+        switch (exitClass)
+        {
+            case "tab-hidden-l":
+                entryClass = "tab-hidden-r";
+                break;
+            case "tab-hidden-r":
+                entryClass = "tab-hidden-l";
+                break;
+        }
+
+        state.Set(entryClass, exitClass);
+
+        await Task.Delay(100);
+
         nav.NavigateTo(url);
     }
 
     public string GetClass(string elm)
     {
-        if (currentUrl!.ToLower().Contains(elm.ToLower()))
+        if (CurrentUrl!.ToLower().Contains(elm.ToLower()))
         {
             return "btn btn-active";
         }
@@ -61,13 +101,13 @@
 
     protected override void OnInitialized()
     {
-        currentUrl = nav.ToBaseRelativePath(nav.Uri);
+        CurrentUrl = nav.ToBaseRelativePath(nav.Uri);
         nav.LocationChanged += OnLocationChanged;
     }
 
     private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
     {
-        currentUrl = nav.ToBaseRelativePath(e.Location);
+        CurrentUrl = nav.ToBaseRelativePath(e.Location);
         StateHasChanged();
     }
 

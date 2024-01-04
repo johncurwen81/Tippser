@@ -9,8 +9,24 @@
 
 @rendermode InteractiveServer
 
-<button type="button" class="btn-navfwd" id="nav-forward" @onclick="@((e) => SetState(1))"></button>
-<button type="button" class="btn-navbck" id="nav-back" @onclick="@((e) => SetState(-1))"></button>
+@if (CurrentUrl == "account/forgotpassword")
+{
+    <button disabled type="button" class="btn-navfwd" id="nav-forward"></button>
+}
+else
+{
+    <button type="button" class="btn-navfwd" id="nav-forward" @onclick="@((e) => SetState(1))"></button>
+}
+
+@if (CurrentUrl == "account/signin")
+{
+    <button disabled type="button" class="btn-navbck" id="nav-back"></button>
+}
+else
+{
+    <button type="button" class="btn-navbck" id="nav-back" @onclick="@((e) => SetState(-1))"></button>
+}
+
 
 @code {
     private string? CurrentUrl;

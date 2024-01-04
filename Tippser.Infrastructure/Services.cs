@@ -217,7 +217,7 @@ namespace Tippser.Infrastructure.Services
 
         public void CreateSchedule()
         {
-            _backgroundJobs.Enqueue<IMatchDataService>(x => x.ImportScheduleData());
+            //_backgroundJobs.Enqueue<IMatchDataService>(x => x.ImportScheduleData());
 
             //_jobManager.AddOrUpdate<IMatchDataService>(nameof(IMatchDataService.ImportScheduleData), x => x.ImportScheduleData(), Cron.Daily);
         }

@@ -12,35 +12,57 @@
 
 <AuthorizeView>
     <Authorized>
-        <a class="@(GetClass("standings"))" @onclick="@((e) => SetState("standings", 1))">
-            @PresentationResources.STANDINGS
-        </a>
-
-        <a class="@(GetClass("bets"))" @onclick="@((e) => SetState("bets", 2))">
-            @PresentationResources.BETS
-        </a>
-
-        <a class="@(GetClass("account"))" @onclick="@((e) => SetState("account", 3))">
-            @PresentationResources.ACCOUNT
-        </a>
+        @{
+            foreach (var page in Pages.Where(r => r.AuthRequired == true))
+            {
+                if (CurrentUrl == page.Url)
+                {
+                    <a disabled class="@(GetClass(page.Url))">
+                        @(page.Text)
+                    </a>
+                }
+                else
+                {
+                    <a class="@(GetClass(page.Url))" @onclick="@((e) => SetState(page.Url, page.Order))">
+                        @(page.Text)
+                    </a>
+                }
+            }
+        }
     </Authorized>
 
     <NotAuthorized>
-        <a class="@(GetClass("account/signin"))" @onclick="@((e) => SetState("account/signin", 1))">
-            @PresentationResources.SIGNIN
-        </a>
-
-        <a class="@(GetClass("account/create"))" @onclick="@((e) => SetState("account/create", 2))">
-            @PresentationResources.CREATEACCOUNT
-        </a>
-
-        <a class="@(GetClass("account/forgotpassword"))" @onclick="@((e) => SetState("account/forgotpassword", 3))">
-            @PresentationResources.FORGOTPASSWORD
-        </a>
+        @{
+            foreach (var page in Pages.Where(r => r.AuthRequired == false))
+            {
+                if (CurrentUrl == page.Url)
+                {
+                    <a disabled class="@(GetClass(page.Url))">
+                        @(page.Text)
+                    </a>
+                }
+                else
+                {
+                    <a class="@(GetClass(page.Url))" @onclick="@((e) => SetState(page.Url, page.Order))">
+                        @(page.Text)
+                    </a>
+                }
+            }
+        }
     </NotAuthorized>
 </AuthorizeView>
 
 @code {
+    private List<NavMenuModel> Pages = new List<NavMenuModel>()
+    {
+        new NavMenuModel("account/signin",PresentationResources.SIGNIN, 1,false ),
+        new NavMenuModel("account/create",PresentationResources.CREATEACCOUNT, 2,false ),
+        new NavMenuModel("account/forgotpassword",PresentationResources.FORGOTPASSWORD,3, false ),
+        new NavMenuModel("standings",PresentationResources.STANDINGS,1, true ),
+        new NavMenuModel("bets",PresentationResources.BETS,2, true),
+        new NavMenuModel("account",PresentationResources.ACCOUNT, 3,true )
+    };
+
     private string? CurrentUrl;
 
     public async Task SetState(string url, int newOrder)
@@ -114,6 +136,14 @@
     public void Dispose()
     {
         nav.LocationChanged -= OnLocationChanged;
+    }
+
+    private class NavMenuModel(string page, string text, int order, bool authRequired)
+    {
+        public string Url { get; set; } = page;
+        public string Text { get; set; } = text;
+        public int Order { get; set; } = order;
+        public bool AuthRequired { get; set; } = authRequired;
     }
 }
 

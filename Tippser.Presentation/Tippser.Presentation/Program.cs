@@ -77,9 +77,9 @@ builder.Services
 
 builder.Services.AddSingleton<IEmailSender<Person>, EmailService>();
 
-builder.Services.AddHangfire(config =>
-    config.UseSqlServerStorage(builder.Configuration.GetConnectionString("TippserConnectionString")));
-builder.Services.AddHangfireServer();
+//builder.Services.AddHangfire(config =>
+//    config.UseSqlServerStorage(builder.Configuration.GetConnectionString("TippserConnectionString")));
+//builder.Services.AddHangfireServer();
 
 var app = builder.Build();
 

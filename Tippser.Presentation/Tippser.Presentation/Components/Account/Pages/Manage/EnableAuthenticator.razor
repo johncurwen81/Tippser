@@ -7,13 +7,13 @@
 @using Microsoft.AspNetCore.Identity
 @using Tippser.Core.Entities
 @using Tippser.Infrastructure.Data;
-@using Tippser.Presentation.Client.Services
+@using Tippser.Presentation.Services
 @using Tippser.Presentation.Components.Layout
 
 @inject UserManager<Person> userManager
 @inject IdentityUserAccessor userAccessor
 @inject UrlEncoder urlEncoder
-@inject IdentityRedirectManager redirectManager
+@inject IdentityRedirectManager redirect
 @inject ILogger<EnableAuthenticator> logger
 
 <PageTitle>Configure authenticator app</PageTitle>
@@ -117,7 +117,7 @@ else
         }
         else
         {
-            redirectManager.RedirectToWithStatus("account/Manage/TwoFactorAuthentication", message, HttpContext);
+            redirect.RedirectToWithStatus("account/Manage/TwoFactorAuthentication", message, HttpContext);
         }
     }
 

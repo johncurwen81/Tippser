@@ -10,6 +10,7 @@ namespace Tippser.Core
     {
         public const string TippserConnectionString = nameof(TippserConnectionString);
         public const string ApiBaseUrl = nameof(ApiBaseUrl);
+        public const string Domain = nameof(Domain);
         public const string Anonymous = nameof(Anonymous);
         public const string Environment = nameof(Environment);
         public const string Development = nameof(Development);
@@ -19,6 +20,9 @@ namespace Tippser.Core
         public const string SuperAdminRoleId = "0b3e703e-bd46-66b2-b868-1ffac7b4674f";
         public const string UserRoleId = "0b3e703e-bd46-77b2-b868-1ffac7b4674f";
         public const string StatusCookieName = "Identity.StatusMessage";
+        public const string ASPNETCORE_ENVIRONMENT = nameof(ASPNETCORE_ENVIRONMENT);
+        public const string LoginPath = "/account/signin";
+        public const string LogoutPath = "/account/signout";
 
         public class Roles
         {

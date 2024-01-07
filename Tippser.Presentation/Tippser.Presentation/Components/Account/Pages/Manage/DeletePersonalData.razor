@@ -4,13 +4,13 @@
 @using Microsoft.AspNetCore.Identity
 @using Tippser.Core.Entities
 @using Tippser.Infrastructure.Data;
-@using Tippser.Presentation.Client.Services
+@using Tippser.Presentation.Services
 @using Tippser.Presentation.Components.Layout
 
 @inject UserManager<Person> userManager
 @inject SignInManager<Person> signInManager
 @inject IdentityUserAccessor userAccessor
-@inject IdentityRedirectManager redirectManager
+@inject IdentityRedirectManager redirect
 @inject ILogger<DeletePersonalData> Logger
 
 <PageTitle>Delete Personal Data</PageTitle>
@@ -78,7 +78,7 @@
         var userId = await userManager.GetUserIdAsync(user);
         Logger.LogInformation("User with ID '{UserId}' deleted themselves.", userId);
 
-        redirectManager.RedirectToCurrentPage();
+        redirect.RedirectToCurrentPage();
     }
 
     private sealed class InputModel

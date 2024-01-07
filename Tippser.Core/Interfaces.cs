@@ -75,6 +75,7 @@ namespace Tippser.Core.Interfaces
         Task<IdentityResult> DeleteAsync(Person person, CancellationToken cancellationToken);
         Task<Person?> FindByIdAsync(string userId, CancellationToken cancellationToken);
         Task<Person?> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken);
+        Task<Person?> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken);
         Task<string> GetUserIdAsync(Person person, CancellationToken cancellationToken);
         Task<string?> GetUserNameAsync(Person person, CancellationToken cancellationToken);
         Task SetUserNameAsync(Person person, string? userName, CancellationToken cancellationToken);
@@ -97,6 +98,7 @@ namespace Tippser.Core.Interfaces
     public interface ISignInService
     {
         Task<SignInResult> PasswordSignIn(string email, string password, bool isPersistent = false, bool lockoutOnFailure = false);
+        Task<SignInResult> CheckPasswordSignInAsync(Person person, string password, bool lockoutOnFailure = false);
         Task SignOut(HttpContext context);
     }
 

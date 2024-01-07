@@ -4,12 +4,12 @@
 @using Microsoft.AspNetCore.Identity
 @using Tippser.Core.Entities
 @using Tippser.Infrastructure.Data;
-@using Tippser.Presentation.Client.Services
+@using Tippser.Presentation.Services
 @using Tippser.Presentation.Components.Layout
 
 @inject SignInManager<Person> signInManager
 @inject UserManager<Person> userManager
-@inject IdentityRedirectManager redirectManager
+@inject IdentityRedirectManager redirect
 @inject ILogger<SigninWithRecoveryCode> Logger
 
 <PageTitle>Recovery code verification</PageTitle>
@@ -64,12 +64,12 @@
         if (result.Succeeded)
         {
             Logger.LogInformation("User with ID '{UserId}' logged in with a recovery code.", userId);
-            redirectManager.RedirectTo(ReturnUrl);
+            redirect.RedirectTo(ReturnUrl);
         }
         else if (result.IsLockedOut)
         {
             Logger.LogWarning("User account locked out.");
-            redirectManager.RedirectTo("account/Lockout");
+            redirect.RedirectTo("account/Lockout");
         }
         else
         {

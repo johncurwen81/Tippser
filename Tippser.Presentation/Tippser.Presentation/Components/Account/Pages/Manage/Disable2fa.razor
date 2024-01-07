@@ -3,11 +3,11 @@
 @using Microsoft.AspNetCore.Identity
 @using Tippser.Core.Entities
 @using Tippser.Infrastructure.Data;
-@using Tippser.Presentation.Client.Services
+@using Tippser.Presentation.Services
 
 @inject UserManager<Person> userManager
 @inject IdentityUserAccessor userAccessor
-@inject IdentityRedirectManager redirectManager
+@inject IdentityRedirectManager redirect
 @inject ILogger<Disable2fa> Logger
 
 <PageTitle>Disable two-factor authentication (2FA)</PageTitle>
@@ -58,7 +58,7 @@
 
         var userId = await userManager.GetUserIdAsync(user);
         Logger.LogInformation("User with ID '{UserId}' has disabled 2fa.", userId);
-        redirectManager.RedirectToWithStatus(
+        redirect.RedirectToWithStatus(
             "account/Manage/TwoFactorAuthentication",
             "2fa has been disabled. You can reenable 2fa when you setup an authenticator app",
             HttpContext);

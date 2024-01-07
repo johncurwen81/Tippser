@@ -7,6 +7,10 @@ using Tippser.Presentation.Client.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Tippser.Core;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace Tippser.Presentation.Controllers
 {
@@ -55,24 +59,62 @@ namespace Tippser.Presentation.Controllers
         }
     }
 
-    public class AccountController(IUserService userService, ISignInService signInService) : BaseApiController<AccountController>
+    public class AccountController(IUserService userService, ISignInService signInService, IConfiguration configuration) : BaseApiController<AccountController>
     {
         private readonly IUserService _userService = userService;
         private readonly ISignInService _signInService = signInService;
+        private readonly IConfiguration _configuration = configuration;
+
 
         [HttpGet(nameof(SignOut))]
-        public new async Task<IActionResult> SignOut()
+        public new async Task SignOut()
         {
             try
             {
-                //await _signInService.SignOut(HttpContext);
-                return Ok();
+                await _signInService.SignOut(HttpContext);
             }
             catch (Exception)
             {
-                return BadRequest();
+
+            }    
+        }
+
+        [HttpPost(nameof(SignIn))]
+        public async Task<ActionResult<Client.Models.SignInResult>> SignIn(SignInModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Bad model");
             }
-            
+
+            var cancellationToken = new CancellationToken();
+
+            var user = await _userService.FindByEmailAsync(model.Email.ToUpper(), cancellationToken);
+            if (user != null && (await _signInService.CheckPasswordSignInAsync(user, model.Password)).Succeeded)
+            {
+                var authClaims = new[]
+                {
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserName!),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
+
+                var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
+
+                var token = new JwtSecurityToken(
+                    issuer: _configuration["Jwt:Issuer"],
+                    audience: _configuration["Jwt:Audience"],
+                    expires: DateTime.Now.AddHours(3),
+                    claims: authClaims,
+                    signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+                );
+
+                return Ok(new
+                {
+                    token = new JwtSecurityTokenHandler().WriteToken(token),
+                    expiration = token.ValidTo
+                });
+            }
+            return Unauthorized();
         }
 
         [HttpPost(nameof(Create))]
@@ -100,25 +142,6 @@ namespace Tippser.Presentation.Controllers
             }
 
             return Ok(response);
-        }
-
-        [HttpPost(nameof(SignIn))]
-        public async Task<ActionResult<Client.Models.SignInResult>> SignIn(SignInModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest("Bad model");
-            }
-
-            var response = await _signInService.PasswordSignIn(model.Email, model.Password,isPersistent:model.RememberMe,lockoutOnFailure:false);
-            if (!response.Succeeded)
-            {
-                return BadRequest("Failed to sign in.");
-            }
-
-            var result = new Client.Models.SignInResult(response.Succeeded, response.IsLockedOut);
-
-            return Ok(result);
         }
 
         [HttpPost(nameof(ForgotPassword))]

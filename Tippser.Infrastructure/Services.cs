@@ -79,12 +79,17 @@ namespace Tippser.Infrastructure.Services
 
         public async Task<Person?> FindByIdAsync(string userId, CancellationToken cancellationToken)
         {
-            return await _db.Read(userId);
+            return await _userManager.FindByIdAsync(userId);
         }
 
         public async Task<Person?> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
         {
-            return (await _db.Read()).FirstOrDefault(u => u.NormalizedUserName == normalizedUserName);
+            return await _userManager.FindByNameAsync(normalizedUserName);
+        }
+
+        public async Task<Person?> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken)
+        {
+            return await _userManager.FindByEmailAsync(normalizedEmail);
         }
 
         public Task<string> GetUserIdAsync(Person person, CancellationToken cancellationToken)
@@ -182,6 +187,11 @@ namespace Tippser.Infrastructure.Services
         public async Task<SignInResult> PasswordSignIn(string email, string password, bool isPersistent = false, bool lockoutOnFailure = false)
         {
             return await _signInManager.PasswordSignInAsync(email, password, isPersistent, lockoutOnFailure);
+        }
+
+        public async Task<SignInResult> CheckPasswordSignInAsync(Person person, string password, bool lockoutOnFailure = false)
+        {
+            return await _signInManager.CheckPasswordSignInAsync(person,password, lockoutOnFailure);
         }
 
         public async Task SignOut(HttpContext context)

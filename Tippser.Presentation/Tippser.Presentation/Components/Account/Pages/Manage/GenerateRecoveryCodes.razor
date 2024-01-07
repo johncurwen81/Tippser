@@ -3,11 +3,11 @@
 @using Microsoft.AspNetCore.Identity
 @using Tippser.Core.Entities
 @using Tippser.Infrastructure.Data;
-@using Tippser.Presentation.Client.Services
+@using Tippser.Presentation.Services
 
 @inject UserManager<Person> userManager
 @inject IdentityUserAccessor userAccessor
-@inject IdentityRedirectManager redirectManager
+@inject IdentityRedirectManager redirect
 @inject ILogger<GenerateRecoveryCodes> logger
 
 <PageTitle>Generate two-factor authentication (2FA) recovery codes</PageTitle>

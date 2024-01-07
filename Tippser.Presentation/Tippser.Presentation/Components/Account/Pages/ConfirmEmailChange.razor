@@ -5,12 +5,12 @@
 @using Microsoft.AspNetCore.WebUtilities
 @using Tippser.Core.Entities
 @using Tippser.Infrastructure.Data;
-@using Tippser.Presentation.Client.Services
+@using Tippser.Presentation.Services
 @using Tippser.Presentation.Components.Layout
 
 @inject UserManager<Person> userManager
 @inject SignInManager<Person> signInManager
-@inject IdentityRedirectManager redirectManager
+@inject IdentityRedirectManager redirect
 
 <PageTitle>Confirm email change</PageTitle>
 
@@ -38,7 +38,7 @@
         if (UserId is null || Email is null || Code is null)
         {
             var signinEndpoint = Core.Enums.Endpoint.Convert(Core.Enums.Endpoint.ApiEndpoint.Account_SignIn);
-            redirectManager.RedirectToWithStatus(
+            redirect.RedirectToWithStatus(
                 signinEndpoint, "Error: Invalid email change confirmation link.", HttpContext);
         }
 

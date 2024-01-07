@@ -6,11 +6,11 @@
 @using Tippser.Presentation.Client.Resources
 @using Tippser.Core.Entities
 @using Tippser.Infrastructure.Data
-@using Tippser.Presentation.Client.Services
+@using Tippser.Presentation.Services
 @using Tippser.Presentation.Components.Layout
 
 @inject UserManager<Person> userManager
-@inject IdentityRedirectManager redirectManager
+@inject IdentityRedirectManager redirect
 
 <PageTitle>Confirm email</PageTitle>
 
@@ -33,7 +33,7 @@
     {
         if (UserId is null || Code is null)
         {
-            redirectManager.RedirectTo("");
+            redirect.RedirectTo("");
         }
 
         var user = await userManager.FindByIdAsync(UserId);

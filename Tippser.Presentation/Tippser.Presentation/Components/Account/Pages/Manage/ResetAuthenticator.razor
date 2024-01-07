@@ -3,12 +3,12 @@
 @using Microsoft.AspNetCore.Identity
 @using Tippser.Core.Entities
 @using Tippser.Infrastructure.Data;
-@using Tippser.Presentation.Client.Services
+@using Tippser.Presentation.Services
 
 @inject UserManager<Person> userManager
 @inject SignInManager<Person> signInManager
 @inject IdentityUserAccessor userAccessor
-@inject IdentityRedirectManager redirectManager
+@inject IdentityRedirectManager redirect
 @inject ILogger<ResetAuthenticator> Logger
 
 <PageTitle>Reset authenticator key</PageTitle>
@@ -46,7 +46,7 @@
 
         await signInManager.RefreshSignInAsync(user);
 
-        redirectManager.RedirectToWithStatus(
+        redirect.RedirectToWithStatus(
             "account/Manage/EnableAuthenticator",
             "Your authenticator app key has been reset, you will need to configure your authenticator app using the new key.",
             HttpContext);

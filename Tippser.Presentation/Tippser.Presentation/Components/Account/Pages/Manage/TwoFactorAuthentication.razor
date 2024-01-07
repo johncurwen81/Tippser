@@ -4,12 +4,12 @@
 @using Microsoft.AspNetCore.Identity
 @using Tippser.Core.Entities
 @using Tippser.Infrastructure.Data;
-@using Tippser.Presentation.Client.Services
+@using Tippser.Presentation.Services
 
 @inject UserManager<Person> userManager
 @inject SignInManager<Person> signInManager
 @inject IdentityUserAccessor userAccessor
-@inject IdentityRedirectManager redirectManager
+@inject IdentityRedirectManager redirect
 
 <PageTitle>Two-factor authentication (2FA)</PageTitle>
 
@@ -96,7 +96,7 @@ else
     {
         await signInManager.ForgetTwoFactorClientAsync();
 
-        redirectManager.RedirectToCurrentPageWithStatus(
+        redirect.RedirectToCurrentPageWithStatus(
             "The current browser has been forgotten. When you login again from this browser you will be prompted for your 2fa code.",
             HttpContext);
     }

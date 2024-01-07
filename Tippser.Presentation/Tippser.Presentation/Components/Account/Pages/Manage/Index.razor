@@ -4,12 +4,12 @@
 @using Microsoft.AspNetCore.Identity
 @using Tippser.Core.Entities
 @using Tippser.Infrastructure.Data;
-@using Tippser.Presentation.Client.Services
+@using Tippser.Presentation.Services
 
 @inject UserManager<Person> userManager
 @inject SignInManager<Person> signInManager
 @inject IdentityUserAccessor userAccessor
-@inject IdentityRedirectManager redirectManager
+@inject IdentityRedirectManager redirect
 
 <PageTitle>Profile</PageTitle>
 
@@ -62,12 +62,12 @@
             var setPhoneResult = await userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
             if (!setPhoneResult.Succeeded)
             {
-                redirectManager.RedirectToCurrentPageWithStatus("Error: Failed to set phone number.", HttpContext);
+                redirect.RedirectToCurrentPageWithStatus("Error: Failed to set phone number.", HttpContext);
             }
         }
 
         await signInManager.RefreshSignInAsync(user);
-        redirectManager.RedirectToCurrentPageWithStatus("Your profile has been updated", HttpContext);
+        redirect.RedirectToCurrentPageWithStatus("Your profile has been updated", HttpContext);
     }
 
     private sealed class InputModel

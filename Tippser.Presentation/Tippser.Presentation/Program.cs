@@ -2,22 +2,25 @@ using Hangfire;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using Tippser.Application.Services;
 using Tippser.Core.Entities;
 using Tippser.Core.Interfaces;
+using Tippser.Infrastructure.Data;
 using Tippser.Infrastructure.Repositories;
 using Tippser.Infrastructure.Services;
 using Tippser.Presentation.Client.Pages;
 using Tippser.Presentation.Components;
-using Tippser.Infrastructure.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Localization;
 using System.Globalization;
 using Tippser.Presentation.Helpers;
 using Tippser.Core;
-using Tippser.Presentation.Client.Services;
-using Tippser.Presentation.Client;
+using Tippser.Presentation.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+var env = builder.Environment;
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
@@ -44,56 +47,38 @@ builder.Services.AddScoped<ISignInService, SignInService>();
 
 builder.Services.AddSingleton<SharedStateService>();
 
-var baseAddress = builder.Configuration[Constants.ApiBaseUrl]?.ToString() ?? 
-        throw new InvalidOperationException($"API address '{Constants.ApiBaseUrl}' not found.");
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(baseAddress) });
+// Configure JWT Authentication
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+        };
+    });
 
-var connectionString = builder.Configuration.GetConnectionString(Constants.TippserConnectionString) ?? 
-        throw new InvalidOperationException($"Connection string '{Constants.TippserConnectionString}' not found.");
 builder.Services.AddDbContext<TippserDbContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("TippserConnectionString")));
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddIdentity<Person, IdentityRole>(options =>
-    {
-        options.SignIn.RequireConfirmedAccount = true;
-        options.Password.RequiredLength = 8;
-        options.Password.RequireDigit = true;
-        options.Password.RequireNonAlphanumeric = true;
-        options.Password.RequireUppercase = true;
-        options.Password.RequireLowercase = true;
-    })
+builder.Services
+    .AddIdentityCore<Person>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<TippserDbContext>()
     .AddSignInManager()
     .AddDefaultTokenProviders();
 
-builder.Services.ConfigureApplicationCookie(options =>
-{
-    options.LoginPath = "/account/signin";
-    options.LogoutPath = "/account/signout";
-    options.ExpireTimeSpan = TimeSpan.FromDays(30);
-    options.SlidingExpiration = true;
-    options.Cookie.HttpOnly = true;
-    //options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // In production
-});
-
-
-// add CORS policy for Wasm client
-builder.Services.AddCors(
-    options => options.AddPolicy(
-        "wasm",
-        policy => policy.WithOrigins(builder.Configuration[Constants.ApiBaseUrl]!)
-            .AllowAnyMethod()
-            .SetIsOriginAllowed(pol => true)
-            .AllowAnyHeader()
-            .AllowCredentials()));
-
 builder.Services.AddSingleton<IEmailSender<Person>, EmailService>();
 
 builder.Services.AddHangfire(config =>
-    config.UseSqlServerStorage(connectionString));
-
+    config.UseSqlServerStorage(builder.Configuration.GetConnectionString("TippserConnectionString")));
 builder.Services.AddHangfireServer();
 
 var app = builder.Build();
@@ -101,53 +86,21 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseWebAssemblyDebugging();
-    app.UseMigrationsEndPoint();
     app.UseDeveloperExceptionPage();
+    app.UseMigrationsEndPoint();
 }
 else
 {
-    app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseExceptionHandler("/Error");
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
-
 app.UseStaticFiles();
-app.UseAntiforgery();
 
-var supportedCultures = new List<CultureInfo>
-{
-    new("sv-SE"),
-    new("en-US"),
-    new("en-GB")
-};
+app.UseAuthentication();    // Enable authentication
+app.UseAuthorization();     // Enable authorization
 
-var localizationOptions = new RequestLocalizationOptions
-{
-    DefaultRequestCulture = new RequestCulture("en-US"),
-    SupportedCultures = supportedCultures,
-    SupportedUICultures = supportedCultures,
-};
-
-localizationOptions.RequestCultureProviders.Insert(0, new CookieRequestCultureProvider());
-
-app.UseRequestLocalization(localizationOptions);
-
-app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode()    
-    .AddInteractiveWebAssemblyRenderMode()
-    .AddAdditionalAssemblies(typeof(Counter).Assembly);
-
-// Add additional endpoints required by the Identity /Account Razor components.
-app.MapAdditionalEndpoints();
 app.MapControllers();
-
-using (var scope = app.Services.CreateScope())
-{
-    var backgroundJobsService = scope.ServiceProvider.GetRequiredService<IBackroundJobsService>();
-    backgroundJobsService.CreateSchedule();
-}
 
 app.Run();

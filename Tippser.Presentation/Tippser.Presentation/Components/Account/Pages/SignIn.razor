@@ -4,10 +4,9 @@
 
 @inject HttpClient api
 @inject NavigationManager nav
-@inject IdentityRedirectManager redirectManager
+@inject IdentityRedirectManager redirect
 @inject SharedStateService state
 @inject IJSRuntime js
-
 
 <PageTitle>@PresentationResources.SIGNIN</PageTitle>
 
@@ -76,8 +75,6 @@
         var json = JsonSerializer.Serialize(signInRequest);
         var data = new StringContent(json, Encoding.UTF8, "application/json");
 
-        using var client = new HttpClient();
-
         var endpoint = Core.Enums.Endpoint.Convert(ApiEndpoint.Account_SignIn);
         var response = await api.PostAsJsonAsync(endpoint, signInRequest);
 
@@ -86,7 +83,7 @@
             var result = await response.Content.ReadFromJsonAsync<Client.Models.SignInResult>();
             if (result!.Success)
             {
-                nav.NavigateTo("/standings", true);
+                redirect.RedirectTo("/standings");
             }
             else if (result.Locked == true)
             {

@@ -6,13 +6,13 @@
 @using Tippser.Core.Entities
 @using Tippser.Infrastructure.Data;
 @using Tippser.Infrastructure.Services
-@using Tippser.Presentation.Client.Services
+@using Tippser.Presentation.Services
 @using Tippser.Presentation.Components.Layout
 
 @inject UserManager<Person> userManager
 @inject IEmailSender<Person> emailSender
 @inject NavigationManager nav
-@inject IdentityRedirectManager redirectManager
+@inject IdentityRedirectManager redirect
 
 <PageTitle>Register confirmation</PageTitle>
 
@@ -49,7 +49,7 @@ else
     {
         if (Email is null)
         {
-            redirectManager.RedirectTo("");
+            redirect.RedirectTo("");
         }
 
         var user = await userManager.FindByEmailAsync(Email);

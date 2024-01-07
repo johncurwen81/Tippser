@@ -1,10 +1,11 @@
 ﻿@page "/account/create"
+@using Tippser.Core
 
 @rendermode InteractiveServer
 
 @inject HttpClient api
 @inject NavigationManager nav
-@inject IdentityRedirectManager redirectManager
+@inject IdentityRedirectManager redirect
 @inject SharedStateService state;
 @inject IJSRuntime js
 
@@ -87,7 +88,7 @@
             var result = await response.Content.ReadFromJsonAsync<IdentityResult>();
             if (result?.Succeeded == true)
             {
-                redirectManager.RedirectTo("/account/signin");
+                redirect.RedirectTo(Constants.LoginPath);
             }
             else if (result?.Errors.Count()>0)
             {

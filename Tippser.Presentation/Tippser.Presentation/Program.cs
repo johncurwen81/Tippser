@@ -38,7 +38,7 @@ builder.Services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAu
 
 builder.Services.AddScoped<IBaseRepository, BaseRepository>();
 builder.Services.AddScoped<IDbService, DbService>();
-builder.Services.AddScoped<IBackroundJobsService, BackroundJobsService>();
+//builder.Services.AddScoped<IBackroundJobsService, BackroundJobsService>();
 builder.Services.AddScoped<IScraperService, ScraperService>();
 builder.Services.AddScoped<IMatchDataService, MatchDataService>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -102,5 +102,11 @@ app.UseAuthentication();    // Enable authentication
 app.UseAuthorization();     // Enable authorization
 
 app.MapControllers();
+
+//using (var scope = app.Services.CreateScope())
+//{
+//    var backgroundJobsService = scope.ServiceProvider.GetRequiredService<IBackroundJobsService>();
+//    backgroundJobsService.CreateSchedule();
+//}
 
 app.Run();
